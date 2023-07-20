@@ -18,7 +18,7 @@
 
       <div class="form-group my-3">
         <label>Topic</label>
-        <select class="form-control" name="topic">
+        <select class="form-control" name="topic" required>
           <option value="">Select Your Topic</option>
           <% for(let i=0; i<topics.length ; i++) { %>
           <option value="<%=topics[i]._id %>"><%= topics[i].name %></option>
@@ -28,7 +28,7 @@
 
       <div class="form-group my-3">
         <label for="">Title</label>
-        <input type="text" class="form-control" name="title">
+        <input type="text" class="form-control" name="title" required>
       </div>
 
       <div class="form-group">

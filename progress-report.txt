@@ -19,6 +19,8 @@ Updated
 
 - sign-up session error solved.
 
+- validations complete for users and topic managers
+
 
 
 

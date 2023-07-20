@@ -112,9 +112,7 @@ router.get("/register",function(req,res){
 router.post("/register", function (req, res) {
     var udetails = req.body;
 
-    if (!udetails.name || !udetails.email || !udetails.password) {
-        res.render("home/register", { message: "Enter all details to register" });
-    } else {
+    if(udetails.name && udetails.email && udetails.password) {
 
         user.findOne({ $or: [{ name: udetails.name }, { email: udetails.email }] })
             .then(function (existingUser) {
