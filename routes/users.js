@@ -239,7 +239,7 @@ router.get("/premium", checkSignIn, function(req,res){
 
 router.get("/discover", checkSignIn, function(req,res){
 
-    article.find({approved: "Approved !"})
+    article.find({ approved: "Approved !", user: { $ne: req.session.userId } })
     .populate({path: "topic"})
     .populate({path: "user"})
     .then(function(articles){
@@ -295,19 +295,49 @@ router.post("/review/:id", function(req,res){
         user : req.session.userId
     })
     newReview.save()
-    .then(()=>{
-        user.updateOne({_id:req.session.userId},{$push: {reviews: newReview._id}, $inc: {stars: newReview.rating} })
-        .then(()=>{
-            article.updateOne({_id : req.params.id},{$push: {reviews: newReview._id}})
-            .then(()=>{
-                res.redirect("/posts/"+req.params.id);
+    .then(() => {
+    user.updateOne({ _id: req.session.userId }, { $push: { reviews: newReview._id } })
+        .then(() => {
+         article.updateOne({ _id: req.params.id }, { $push: { reviews: newReview._id } })
+            .then(() => {
+                article.findById(req.params.id)
+                    .populate('user')
+                        .then((articleData) => {
+                            const articleUser = articleData.user;
+                            user.updateOne({ _id: articleUser._id }, { $inc: { stars: newReview.rating } })
+                            .then(() => {
+                            res.redirect("/posts/" + req.params.id);
+                            })
+                            .catch((err) => { console.log(err) });
+                            })
+                            .catch((err) => { console.log(err) });
+                    })
+                    .catch((err) => { console.log(err) });
             })
-            .catch((err)=>{console.log(err)})
+            .catch((err) => { console.log(err) });
+    })
+    .catch((err) => { console.log(err); });
+});
 
-        }).catch((err)=>{console.log(err)})
+router.get("/reviewDelete/:id",function(req,res){
 
-    }).catch((err)=>{console.log(err)})
+    var reviewId = req.params.id;
 
+    review.findById(reviewId)
+    .populate({path: "user"})
+    .populate({path: "article"})
+    .then((review)=>{
+        user.findByIdAndUpdate(req.session.userId, { $pull: {reviews: review._id } })
+        .then(()=>{
+            article.findByIdAndUpdate(review.article._id, { $pull: {reviews: review._id } })
+            .then(()=>{
+                res.redirect("/posts/"+ review.article._id);
+            })
+            .catch((err)=>{console.log(err);})
+
+        }).catch((err)=>{console.log(err);})
+
+    }).catch((err)=>{console.log(err);})
 })
 
 
@@ -345,20 +375,6 @@ router.get("/delete/:id", function(req, res) {
         .catch(function(err) {
             res.redirect("/dashboard");
         });
-    
-
-
-
-
-
-
-//     article.deleteOne({ _id: req.params.id })
-//         .then(function() {
-//             res.redirect("/dashboard");
-//         })
-//         .catch(function(err) {
-//             console.log(err);
-//         });
 });
 
 

@@ -1,0 +1,24 @@
+
+Updated
+
+- user module : done 
+- manager module : done
+- ratings and comments : done
+
+- error with adding review stars - solved
+
+- every form now has client side validation
+
+- discover tab now do not show logged in user articles anymore
+
+- when user becomes premium for the first time.. they are redirected   to /premium to display message. After that, they will be redirected   to /dashboard everytime they login
+
+
+
+Tasks Left
+
+ - admin module
+
+ - add edit buttons for some pages
+
+ - minor improvements
