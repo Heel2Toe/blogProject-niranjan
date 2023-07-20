@@ -1,0 +1,33 @@
+<%- include("../partials/header") %>
+
+<div class="containerc">
+    
+
+    <% if(articles == "" || articles == undefined) {%>
+
+        <div class="box glass centeralign">
+
+            <div><i class="fa-solid fa-triangle-exclamation" style="color:#4f0303; font-size:100px; "></i></div>
+
+            <div><h2 class="text-light">No Posts Available at Present</h2></div>
+
+        </div>
+
+        <% } else { %>
+
+            <h3 class="d-flex text-light my-3" style="align-self:flex-start ;">DISCOVER NEW POSTS</h3>
+
+            <% for(let i =0; i<articles.length; i++) { %>
+
+                    <div class="box glass my-3 col-12 text-light leftalign">
+                    <h3><%=articles[i].title%></h3>
+                    <h4>Topic : <%= articles[i].topic.name %></h4>
+                    <h4>By : <%= articles[i].user.name%></h4>
+                    <p><%= (articles[i].content).slice(0,200)%>...<a class="text-light" href="homePosts/<%=articles[i]._id%>">Read More</a></p>
+                    </div>
+
+            <% } } %>
+</div>
+
+
+<%- include("../partials/footer") %>

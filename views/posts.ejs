@@ -1,0 +1,110 @@
+<%- include("partials/header") %>
+
+<div class="containerc">
+
+        <div class="box glass col-12 text-light leftalign mb-3">
+        <h3><%=article.title%></h3>
+        <h4>Topic : <%= article.topic.name %></h4>
+        <h5><%=article.approved%></h5>
+        <p><%=article.content%></p>
+
+        <% if(!user && !manager) { %>
+
+      </div>
+      <div class="leftalign box glass col-12 text-light">
+      <h5>login to view comments</h5>
+      </div>
+
+        <% } %>
+ 
+<% if(user) { %>        
+
+<% if(article.user.name == user) { %>
+        <div class="leftalign">
+        <button class="btn btn-danger" onclick="deleteConfirm()">Delete</button>
+        </div>
+        </div>
+    
+        <div class="box glass col-12 text-light leftalign box-n mb-3" id="deletebox">
+        <h5>Are you sure you want to delte this post ? </h5>
+        <span><button class="btn btn-danger" onclick="location.href='/delete/<%=article._id%>'">Yes</button>
+        <button class="btn btn-dark"  onclick="hide()">No</button></span>
+        </div>
+<% } %>
+  
+    <%if(premium) { %>
+
+         <% if(article.user.name != user) { %>
+         </div>
+         <% } %>
+
+        <% if(article.user.name != user) { %>
+        <div class="box glass col-12 text-light leftalign">
+        <button type="button" class="btn btn-outline-light my-3 col-4" onclick="location.href='/review/<%=article._id%>'">Post Comment</button>
+        </div>
+        <% } %>
+
+       
+    <% } else { %>    
+        
+        <% if(article.user.name != user) { %>
+        </div>
+        <% } %>
+
+        <div class="box glass col-12 text-light leftalign">
+        <h5>only premium users can comment</h5>
+        </div>
+
+    <% } %>
+  
+
+  
+ <% if(!article.reviews || article.reviews.length === 0) { %>
+    
+     <div class="box glass mt-3 col-12 leftalign text-light">
+     <h5>no comments yet</h5>
+     </div>
+
+ <% } else { %>
+        <div class="box glass mt-3 col-12 text-light leftalign">
+          <h3>comments</h3>      
+       <% for(let i=0; i<article.reviews.length; i++) {%>
+
+          <div class="my-3 box glass col-12 leftalign">
+          <h5><%= article.reviews[i].user.name %></h5>
+          <h6>Rated : <%= article.reviews[i].rating%> stars</h6>
+          <p><%= article.reviews[i].comment %></p>
+        
+
+          <% if(article.reviews[i].user._id == userId) { %>
+          <button class="btn btn-danger" onclick="location.href='/reviewDelete/<%=article.reviews[i]._id%>'">Delete</button>
+          </div>
+          <% } else { %> 
+        </div>
+           <% } %>
+  <% } %>
+        </div>
+<% } %>
+  
+<% } %>
+
+
+
+    
+<%if(manager) {%>
+
+        <div class="leftalign">
+        <span>
+              <button class="btn btn-success" onclick="location.href='/managers/approve/<%=article._id%>'" >Approve</button>
+              <button class="btn btn-danger"  onclick="location.href='/managers/reject/<%=article._id%>'">Reject</button>
+        </span>
+        </div>     
+        </div>
+
+<% } %>
+
+</div>
+
+
+
+<%- include("partials/footer") %>

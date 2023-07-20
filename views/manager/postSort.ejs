@@ -1,0 +1,31 @@
+<%- include("../partials/header") %>
+
+<div class="containerc">
+
+    <% if(!topic.articles) {%>
+
+        <div class="box glass centeralign">
+            <div>
+            <i class="fa-regular fa-folder-open" style="color:#4f0303; font-size:100px; "></i>
+            </div>
+            <div>
+              <h1 class="text-light">No posts yet</h1>
+            </div>
+        </div>
+
+ <%} else { for(let i=0; i<topic.articles.length; i++){ %>
+    <% if(topic.articles[i].approved == sort ) { %>
+    <div class="box glass col-12 leftalign text-light mt-3">
+        <h1><%= topic.articles[i].title %></h1>
+        <h3>Topic: <%= topic.name%></h3>
+        <h4></h4>
+        <h5><%= (topic.articles[i].articleDate).toLocaleDateString({year: 'numeric', month: 'long', day: 'numeric'})%></h5>
+        <h5><%= topic.articles[i].approved %></h5>
+        <p><%= (topic.articles[i].content).slice(0,200) %>...<a class="text-light" href="/posts/<%=topic.articles[i]._id%>">Read more</a></p>
+    </div>
+    <% }} }%>
+
+</div>
+
+
+<%- include("../partials/footer") %>

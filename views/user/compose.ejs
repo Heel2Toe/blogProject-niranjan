@@ -1,0 +1,51 @@
+<%- include("../partials/header") %>
+
+
+
+<div class="containerc">
+
+  <div class="box glass col-12">
+
+    <form method="post" class="col-12 text-light">
+
+      <div>
+        <h3 style="font-weight: bolder;"><span style="color: #fe5353;">Create</span><span style="color: #858484;">Post</span></h3>
+      </div>
+
+      <div>
+        <h5 class="text-light" id="message"><%= message %></h5>
+      </div>
+
+      <div class="form-group my-3">
+        <label>Topic</label>
+        <select class="form-control" name="topic">
+          <option value="">Select Your Topic</option>
+          <% for(let i=0; i<topics.length ; i++) { %>
+          <option value="<%=topics[i]._id %>"><%= topics[i].name %></option>
+          <% } %>
+        </select>
+      </div>
+
+      <div class="form-group my-3">
+        <label for="">Title</label>
+        <input type="text" class="form-control" name="title">
+      </div>
+
+      <div class="form-group">
+        <label for="content">Blog Content</label>
+        <textarea class="form-control mb-3" name="content" rows="3" required></textarea>
+      </div>
+
+      <div class="centeralign">
+        <button type="submit" class="btn btn-outline-light my-3 col-6">Submit</button>
+      </div>
+      
+    </form>
+  </div>
+</div>
+
+
+
+
+
+<%- include("../partials/footer") %>

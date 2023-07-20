@@ -1,0 +1,31 @@
+use 14/7/23  class as reference
+
+save all schema js files in modals folder
+
+eg schema file:
+
+const mongoose = require('mongoose'); var StudentSchema = new mongoose.Schema({     name:String,     roll_no:Number,     mobile_no:String,     class_id:String });    module.exports = mongoose.model('student',StudentSchema);
+
+user_type and approved should be in user collection that has values 1 and 2
+
+multiple users
+use session style login
+admin needed
+topic managers also needed (manages different topics, and canread topics, need thier approvement for it to be live on site)
+admin predefined topics
+
+basic user and premium users 
+only premium users can comment and star the topics
+normal users can only post
+if one user recieves total rating more than a threshold, then they are upgraded to premium user
+
+tobe inserted into the mongo
+
+article-name
+article-description
+article-content
+article-topic-id
+article-date
+article-user-which submitted it-id
+
+use routuer and use modules, not all in single app.js
