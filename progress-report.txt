@@ -5,13 +5,20 @@ Updated
 - manager module : done
 - ratings and comments : done
 
+- now redirects back to login page if session is Expired
+
 - error with adding review stars - solved
 
 - every form now has client side validation
 
 - discover tab now do not show logged in user articles anymore
 
-- when user becomes premium for the first time.. they are redirected   to /premium to display message. After that, they will be redirected   to /dashboard everytime they login
+- when user becomes premium for the first time.. they are redirected to /premium to display the message that they are premium. After that, they will be redirected to /dashboard everytime they login
+
+- articles now sorted by newest first.
+
+- sign-up session error solved.
+
 
 
 

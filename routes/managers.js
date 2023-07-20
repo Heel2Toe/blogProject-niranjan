@@ -65,9 +65,10 @@ function checkSignIn(req,res,next){
  router.get("/mdashboard", checkSignIn, function(req,res){
 
     manager.findOne({_id: req.session.managerId})
-    .populate({path: "topic", populate: { path: 'articles'}})
+    .populate({path: "topic", populate: { path: 'articles', 
+     options: {sort: { articleDate: -1 }} } })
     .then((mdata)=>{
-        
+    
         res.render("manager/mdashboard",{topic: mdata.topic});
 
     }).catch((err)=>{console.log})
@@ -97,7 +98,8 @@ function checkSignIn(req,res,next){
  router.get("/postSort/:sort", checkSignIn, function(req,res){
 
     manager.findOne({_id: req.session.managerId})
-    .populate({path: "topic", populate: { path: 'articles'}})
+    .populate({path: "topic", populate: { path: 'articles', 
+     options: { sort: { articleDate: -1 }} }})
     .then((mdata)=>{
         
         res.render("manager/postSort",{topic: mdata.topic, sort: req.params.sort});

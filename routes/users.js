@@ -33,7 +33,7 @@ router.use(function(req, res, next) {
 
 router.get("/",function(req,res){
  
-    article.find({approved: "Approved !"})
+    article.find({approved: "Approved !"}).sort({articleDate: -1})
     .populate({path: "topic"})
     .populate({path: "user"})
     .then(function(articles){
@@ -43,6 +43,9 @@ router.get("/",function(req,res){
         console.log(err)})
 })
 
+
+
+
 router.get("/login",function(req,res){
 
     const message = req.session.message;
@@ -50,12 +53,13 @@ router.get("/login",function(req,res){
     res.render("home/login",{message});
 })
 
+
+
+
 router.post("/login", function(req, res) {
     var udetails = req.body;
 
-    if (!udetails.email || !udetails.password) {
-        res.render("home/login", { message: "Enter all details to proceed" });
-    } else {
+  if(udetails.email && udetails.password) {
         user.findOne({ email: udetails.email, password: udetails.password })
             .then(function(userdata) {
                 if (userdata) {
@@ -95,10 +99,15 @@ router.post("/login", function(req, res) {
 });
 
 
+
+
 router.get("/register",function(req,res){
 
     res.render("home/register");
 });
+
+
+
 
 router.post("/register", function (req, res) {
     var udetails = req.body;
@@ -125,10 +134,10 @@ router.post("/register", function (req, res) {
                     })
                     newUser.save()
                         .then(function () {
-                            user.find({name: udetails.name})
-                            .then(function(userdata){
-                              req.session.userId =userdata._id;
-                              req.session.user = userdata.name;
+                            user.find({name: newUser.name})
+                            .then(function(){
+                              req.session.user = newUser.name;
+                              req.session.userId = newUser._id;
                               res.redirect("/dashboard");
                             })
                             .catch(function(err){
@@ -147,6 +156,8 @@ router.post("/register", function (req, res) {
 });
  
 
+
+
 function checkSignIn(req,res,next){
     if(req.session.user || req.session.manager){
        next();}
@@ -157,24 +168,27 @@ function checkSignIn(req,res,next){
 }
  }
 
+
+
+
  router.get("/dashboard",checkSignIn, function(req,res){
     const userid = req.session.userId;
 
     user.findById(userid)
-  .populate({path: 'articles',
-   populate: {
-      path: 'topic',
-      model: 'topics'
-    }
-  })
-  .then(function(user) {
-    // const premium = req.session.premium;
+    .populate({ path: "articles",options:{sort:{articleDate: -1}}, 
+     populate: { path: "topic",}
+    })
+  .then(function(user)
+
+   {
      res.render("user/dashboard", { articles: user.articles});
   })
   .catch(function(err) {
     res.send(err);
   });
 }) 
+
+
 
 
 router.get("/compose", checkSignIn, function(req,res){
@@ -185,6 +199,8 @@ router.get("/compose", checkSignIn, function(req,res){
         res.render("user/compose",{topics,message}); 
     })
 })
+
+
 
 
 router.post("/compose", function(req,res){
@@ -232,14 +248,19 @@ else{
   }
 });
 
+
+
+
 router.get("/premium", checkSignIn, function(req,res){
     res.render("user/premium");
 })
 
 
+
+
 router.get("/discover", checkSignIn, function(req,res){
 
-    article.find({ approved: "Approved !", user: { $ne: req.session.userId } })
+    article.find({ approved: "Approved !", user: { $ne: req.session.userId } }).sort({articleDate: -1})
     .populate({path: "topic"})
     .populate({path: "user"})
     .then(function(articles){
@@ -248,6 +269,9 @@ router.get("/discover", checkSignIn, function(req,res){
     .catch(function(err){
         console.log(err)})
 })
+
+
+
 
 router.get("/homePosts/:id", function(req, res) {
     var articleId = req.params.id;
@@ -262,6 +286,8 @@ router.get("/homePosts/:id", function(req, res) {
             res.send(err);
         });
 });
+
+
 
 
 router.get("/posts/:id", function(req, res) {
@@ -279,10 +305,15 @@ router.get("/posts/:id", function(req, res) {
 });
 
 
+
+
 router.get("/review/:id",checkSignIn, function(req,res){
 
     res.render("user/review");
 })
+
+
+
 
 router.post("/review/:id", function(req,res){
 
@@ -319,6 +350,9 @@ router.post("/review/:id", function(req,res){
     .catch((err) => { console.log(err); });
 });
 
+
+
+
 router.get("/reviewDelete/:id",function(req,res){
 
     var reviewId = req.params.id;
@@ -331,7 +365,11 @@ router.get("/reviewDelete/:id",function(req,res){
         .then(()=>{
             article.findByIdAndUpdate(review.article._id, { $pull: {reviews: review._id } })
             .then(()=>{
+                review.deleteOne({_id: reviewId})
+                .then(()=>{
                 res.redirect("/posts/"+ review.article._id);
+                })
+                .catch((err)=>{console.log(err);})       
             })
             .catch((err)=>{console.log(err);})
 
@@ -339,6 +377,8 @@ router.get("/reviewDelete/:id",function(req,res){
 
     }).catch((err)=>{console.log(err);})
 })
+
+
 
 
 router.get("/delete/:id", function(req, res) {
@@ -376,6 +416,8 @@ router.get("/delete/:id", function(req, res) {
             res.redirect("/dashboard");
         });
 });
+
+
 
 
 router.get("/logout", function(req,res){
