@@ -1,15 +1,16 @@
 
 
 function deleteConfirm(){
-    $("#deletebox").addClass("box-y").removeClass("box-n")
+    $(".deletebox").addClass("box-y").removeClass("box-n")
   }
+  
   function hide(){
-    $("#deletebox").addClass("box-n").removeClass("box-y")
+    $(".deletebox").addClass("box-n").removeClass("box-y")
   }
 
   function minPassword(){
 
-       if( ($(".password").html).length < 8 )
+       if( ($(".password").val().length) < 8 )
        {
         $(".messagebox").addClass("box-y").removeClass("box-n");
         $("#message").html("minimum 8 characters required for password");

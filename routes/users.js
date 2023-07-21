@@ -253,7 +253,15 @@ router.get("/premium", checkSignIn, function(req,res){
     res.render("user/premium");
 })
 
-
+router.get("/pcounter", checkSignIn, function(req,res){
+    
+    user.findById(req.session.userId)
+    .then(function (userdata){
+        var counter = 10 - userdata.stars;
+        res.render("user/pcounter",{counter});
+    })
+    
+})
 
 
 router.get("/discover", checkSignIn, function(req,res){
@@ -301,6 +309,68 @@ router.get("/posts/:id", function(req, res) {
             res.send(err);
         });
 });
+
+
+
+router.get("/delete/:id", function(req, res) {
+
+    const articleId = req.params.id;
+
+    article.findById(articleId)
+
+        .then(function(article) {
+                article.deleteOne({ _id: articleId })
+
+                    .then(function() {
+                        user.findByIdAndUpdate(req.session.userId, { $pull: { articles: articleId, reviews: article.reviews } })
+    
+                        .then(function() {
+                            review.deleteMany({ _id: { $in: article.reviews } })
+
+                                .then(function() {
+                                    res.redirect("/dashboard");
+                                })
+                                .catch(function(err) {
+                                    console.log(err);
+                                });
+                        })
+                        .catch(function(err) {
+                            console.log(err);                        
+                        });
+                    })
+                    .catch(function(err) {
+                        console.log(err);
+                    });
+            
+        })
+        .catch(function(err) {
+            res.redirect("/dashboard");
+        });
+});
+
+
+
+router.get("/edit/:id", function(req,res){
+
+    article.findById(req.params.id)
+    .then((articledata)=>{
+        res.render("user/articleEdit",{article : articledata})
+    })
+})
+
+router.post("/edit/:id", function(req,res){
+
+    var articleId = req.params.id;
+    var adetails = req.body;
+
+    article.updateOne({_id : articleId}, {$set: {title: adetails.title, 
+                                                content: adetails.content, 
+    }})
+       .then(()=>{
+        res.redirect("/posts/"+articleId);
+
+    }).catch((err) => { console.log(err); });
+})
 
 
 
@@ -379,41 +449,35 @@ router.get("/reviewDelete/:id",function(req,res){
 
 
 
-router.get("/delete/:id", function(req, res) {
+router.get("/reviewEdit/:id", function(req,res){
 
-    const articleId = req.params.id;
+review.findById(req.params.id)
+.then((reviewdata)=>{
+  res.render("user/reviewEdit", {review : reviewdata});
 
-    article.findById(articleId)
+  }).catch((err)=>{console.log(err);})
+})
 
-        .then(function(article) {
-                article.deleteOne({ _id: articleId })
 
-                    .then(function() {
-                        user.findByIdAndUpdate(req.session.userId, { $pull: { articles: articleId, reviews: article.reviews } })
-    
-                        .then(function() {
-                            review.deleteMany({ _id: { $in: article.reviews } })
 
-                                .then(function() {
-                                    res.redirect("/dashboard");
-                                })
-                                .catch(function(err) {
-                                    console.log(err);
-                                });
-                        })
-                        .catch(function(err) {
-                            console.log(err);                        
-                        });
-                    })
-                    .catch(function(err) {
-                        console.log(err);
-                    });
-            
-        })
-        .catch(function(err) {
-            res.redirect("/dashboard");
-        });
-});
+
+router.post("/reviewEdit/:id",function(req,res){
+
+    var reviewId = req.params.id;
+    var rdetails = req.body;
+
+    review.updateOne({_id: reviewId}, {$set: {comment: rdetails.comment, rating: rdetails.rating}})
+    .then(()=>{
+        review.findById(reviewId)
+        .populate({path: "article"})
+        .then((rdata)=>{
+        res.redirect("/posts/"+rdata.article._id);
+
+        }).catch((err)=>{console.log(err);})
+
+    }).catch((err)=>{console.log(err);})
+
+})
 
 
 
