@@ -82,6 +82,17 @@
           </li>
         </ul>
 
+     <% } else if(adminId) { %>
+
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/adashboard">Users</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/ntopic">Create Topic</a>
+        </li>
+      </ul>
+
 
      <% } else { %>
 
@@ -123,6 +134,17 @@
           </li>
         </ul>
 
+        <% } else if(adminId) {%>
+
+          <ul class="navbar-nav d-flex flex-row">
+            <li class="nav-item me-3 me-lg-0">
+              <a class="nav-link" href="/logout">
+                <i class="fas fa-sign-out" style='font-size:18px'></i>
+                Admin
+              </a>
+            </li>
+          </ul>
+        
         <% } else {%>
 
         <ul class="navbar-nav d-flex flex-row">
@@ -136,7 +158,7 @@
               <li>
                 <hr class="dropdown-divider">
               </li>
-              <li><a class="dropdown-item" href="/admins">Admin</a></li>
+              <li><a class="dropdown-item" href="/admin/login">Admin</a></li>
             </ul>
           </li>
         </ul>

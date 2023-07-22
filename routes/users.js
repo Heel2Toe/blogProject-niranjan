@@ -23,11 +23,17 @@ router.use(function(req, res, next) {
 
  router.use(function(req, res, next) {
     res.locals.message = req.session.message;
+
     res.locals.user = req.session.user;
     res.locals.userId = req.session.userId;
+
     res.locals.premium = req.session.premium;
+
     res.locals.manager = req.session.manager;
     res.locals.managerId = req.session.managerId;
+
+    res.locals.adminId = req.session.adminId;
+    
     next();
   });
 
@@ -296,7 +302,7 @@ router.get("/homePosts/:id", function(req, res) {
 
 
 
-router.get("/posts/:id", function(req, res) {
+router.get("/posts/:id", checkSignIn, function(req, res) {
     var articleId = req.params.id;
     article.findById(articleId)
         .populate({ path: 'user' })
@@ -350,7 +356,7 @@ router.get("/delete/:id", function(req, res) {
 
 
 
-router.get("/edit/:id", function(req,res){
+router.get("/edit/:id", checkSignIn, function(req,res){
 
     article.findById(req.params.id)
     .then((articledata)=>{
@@ -449,7 +455,7 @@ router.get("/reviewDelete/:id",function(req,res){
 
 
 
-router.get("/reviewEdit/:id", function(req,res){
+router.get("/reviewEdit/:id", checkSignIn, function(req,res){
 
 review.findById(req.params.id)
 .then((reviewdata)=>{

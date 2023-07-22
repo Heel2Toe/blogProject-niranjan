@@ -3,6 +3,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 var userRoute = require("./routes/users");
 var managerRoute = require("./routes/managers");
+var adminRoute = require("./routes/admin");
+
 
 
 const app = express();
@@ -22,6 +24,9 @@ async function main() {
 app.use("/", userRoute);
 
 app.use("/managers", managerRoute);
+
+app.use("/admin", adminRoute);
+
 
 
 

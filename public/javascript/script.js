@@ -8,18 +8,31 @@ function deleteConfirm(){
     $(".deletebox").addClass("box-n").removeClass("box-y")
   }
 
-  function minPassword(){
 
-       if( ($(".password").val().length) < 8 )
+
+  function Password(){
+
+       if( ($(".password").val().length) < 8 || $(".password").val() != $(".prePassword").val())
        {
         $(".messagebox").addClass("box-y").removeClass("box-n");
-        $("#message").html("minimum 8 characters required for password");
+
+          if($(".password").val().length < 8){
+          $("#message").html("minimum 8 password characters required");
+          return false;
+           }
+
+        else if($(".password").val() != $(".prePassword").val()){
+        $("#message").html("confirm password mismatch");
         return false;
-       }
-       else{
+        }
+      }
+
+       else
+        {
         return true;
+        }
        }
-  }
+  
 
   $(window).on("load", function() {
 
