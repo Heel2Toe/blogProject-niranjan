@@ -49,6 +49,11 @@ router.get("/",function(req,res){
         console.log(err)})
 })
 
+router.get("/about", function(req,res){
+
+    res.render("home/about");
+})
+
 
 
 
