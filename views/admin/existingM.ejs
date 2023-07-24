@@ -1,0 +1,39 @@
+<%- include("../partials/header") -%>
+
+<div class="containerc">
+  
+
+    <% if(!managers) {%>
+
+        <div class="box glass centeralign">
+            <div>
+            <i class="fa-regular fa-folder-open" style="color:#4f0303; font-size:100px; "></i>
+            </div>
+            <div>
+              <h1 class="text-light">No Managers Assigned</h1>
+            </div>
+        </div>
+
+ <%} else { %>
+    
+    <h1 class="mb-5 text-light d-flex" style="font-weight: bolder; align-self: flex-start">Managers</h1>
+    
+   <% for(let i=0; i<managers.length; i++){ %>
+
+    <div class="box glass col-12 leftalign text-light mt-3">
+        
+        <h5>Name : <%= managers[i].name %></h5>
+        <h6>Topic: <%= managers[i].topic.name %></h6>
+        <h6>Email: <%= managers[i].email %></h6>
+        <h6>Password: <%= managers[i].password %></h6>
+
+            
+    </div>
+
+    <% } }%>
+
+</div>
+
+
+
+<%- include("../partials/footer") -%>

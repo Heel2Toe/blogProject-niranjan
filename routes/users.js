@@ -333,26 +333,28 @@ router.get("/delete/:id", function(req, res) {
                         .then(function() {
                             review.deleteMany({ _id: { $in: article.reviews } })
 
+                            .then(function(){
+                              topic.findByIdAndUpdate(article.topic, { $pull: { articles: articleId} })
+                            
+
                                 .then(function() {
                                     res.redirect("/dashboard");
-                                })
-                                .catch(function(err) {
-                                    console.log(err);
-                                });
-                        })
-                        .catch(function(err) {
-                            console.log(err);                        
-                        });
-                    })
-                    .catch(function(err) {
-                        console.log(err);
-                    });
-            
-        })
-        .catch(function(err) {
-            res.redirect("/dashboard");
+
+
+                                }).catch(function(err) {console.log(err);});
+
+                            }).catch(function(err) {console.log(err);});
+
+                         }).catch(function(err) {console.log(err);});
+
+                    }).catch(function(err) {console.log(err);});
+                             
+                }).catch(function(err) {console.log(err);});
+                        
         });
-});
+
+         
+
 
 
 
@@ -484,9 +486,6 @@ router.post("/reviewEdit/:id",function(req,res){
     }).catch((err)=>{console.log(err);})
 
 })
-
-
-
 
 router.get("/logout", function(req,res){
         req.session.destroy(function(){

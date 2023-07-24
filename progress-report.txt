@@ -7,11 +7,13 @@ Updated
 
 - ratings and comments : done
 
+- admin module : done
+
 - All issues stated by the trainer solved
 
 
 
 Tasks Left
 
- - admin module
+ - completed
 

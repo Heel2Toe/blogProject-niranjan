@@ -98,7 +98,7 @@ function checkSignIn(req,res,next){
     })
  })
 
- router.post("/ntopic", function(req,res){
+ router.post("/ntopic", checkSignIn,  function(req,res){
     var details = req.body;
 
     var newManager = new manager({
@@ -129,6 +129,14 @@ function checkSignIn(req,res,next){
     }).catch((err)=>{console.log(err);})
  })
 
+ router.get("/existingM", checkSignIn, function(req,res){
 
+    manager.find().sort({_id : -1})
+    .populate({path : "topic"})
+    .then((data)=>{
+        res.render("admin/existingM", {managers : data});
+
+    }).catch((err)=>{console.log(err);})
+ })
 
 module.exports = router;
