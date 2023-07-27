@@ -25,7 +25,10 @@
         <h5>Name : <%= managers[i].name %></h5>
         <h6>Topic: <%= managers[i].topic.name %></h6>
         <h6>Email: <%= managers[i].email %></h6>
-        <h6>Password: <%= managers[i].password %></h6>
+        <span class="mt-2">
+        <button class="btn btn-danger btn-sm" onclick="location.href='/admin/managerD/<%=managers[i]._id%>'">Delete</button>
+        <button class="btn btn-secondary btn-sm" onclick="location.href='/admin/managerE/<%=managers[i]._id%>'">Edit</button>
+        </span>
 
             
     </div>

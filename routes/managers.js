@@ -1,4 +1,6 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
+
 const router = express.Router();
 
 const articledb = require("../modals/articleSchema");
@@ -32,24 +34,39 @@ router.get("/login",function(req,res){
     res.render("manager/mlogin")
 })
 
-router.post("/login", function(req,res){
+router.post("/login", async function(req,res){
 
     var mdetails = req.body;
+
     if(mdetails.email && mdetails.password){
-    manager.findOne({email : mdetails.email, password: mdetails.password})
-    .then((managerdata)=>{
+
+
+    manager.findOne({email : mdetails.email})
+
+    .then(async (managerdata)=>{
+
+        const password_valid = await bcrypt.compare(mdetails.password,managerdata.password);
+
+           if(password_valid){
             req.session.manager = managerdata.name;
             req.session.managerId = managerdata._id;
-            res.redirect("mdashboard");
+            res.redirect("mdashboard");}
+            
+            else{
+
+                res.render("manager/mlogin",{message: "Invalid Credentials"});
+                console.log("invalid password");
+            }
+    
 
         }).catch((err)=>{
             res.render("manager/mlogin",{message: "Invalid Credentials"});
             console.log(err)})
         }
         else{
-            console.log("invalid");
+            res.render("manager/mlogin",{message: "Invalid Credentials"});
+            console.log("invalid password");
         }
-
 })
 
 function checkSignIn(req,res,next){

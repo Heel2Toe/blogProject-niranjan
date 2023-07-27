@@ -1,4 +1,6 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
+
 const router = express.Router();
 
 const userdb = require("../modals/userSchema");
@@ -66,14 +68,22 @@ router.get("/login",function(req,res){
 
 
 
-
 router.post("/login", function(req, res) {
+
     var udetails = req.body;
 
-  if(udetails.email && udetails.password) {
-        user.findOne({ email: udetails.email, password: udetails.password })
-            .then(function(userdata) {
+    if(udetails.email && udetails.password) {
+        user.findOne({ email: udetails.email })
+            .then(async function(userdata) {
                 if (userdata) {
+                
+                    const passwordValid = await bcrypt.compare(udetails.password, userdata.password);
+
+                    if (!passwordValid) {
+                        res.render("home/login", { message: "Invalid credentials." });
+                        return;
+                    }
+
                     if (userdata.status == 0) {
                         res.render("home/login", { message: "Account currently deactivated" });
                     } 
@@ -88,26 +98,29 @@ router.post("/login", function(req, res) {
     
                         }).catch((err)=> console.log(err)) 
                     } 
-                      else if(userdata.premium == 1){
+                    else if(userdata.premium == 1){
                         req.session.premium = "Premium";
                         req.session.user = userdata.name;
                         req.session.userId =userdata._id;
                         res.redirect("/dashboard");
-                      }
-                        else if(userdata.premium == 0 && userdata.stars < 10){
-
-                            req.session.user = userdata.name;
-                            req.session.userId =userdata._id;
-                            res.redirect("/dashboard");
-                        }
-                        
-                    }else{
-                        res.render("home/login", { message: "Invalid credentials." });
                     }
-                }).catch(()=>{
-                    res.render("home/login", { message: "Invalid credentials." }); })
-            }
+                    else if(userdata.premium == 0 && userdata.stars < 10){
+
+                        req.session.user = userdata.name;
+                        req.session.userId =userdata._id;
+                        res.redirect("/dashboard");
+                    }
+                        
+                }else{
+                    res.render("home/login", { message: "Invalid credentials." });
+                }
+            })
+            .catch(()=>{
+                res.render("home/login", { message: "Invalid credentials." });
+            });
+    }
 });
+
 
 
 
@@ -120,49 +133,51 @@ router.get("/register",function(req,res){
 
 
 
-router.post("/register", function (req, res) {
+router.post("/register", (req, res) => {
     var udetails = req.body;
 
     if(udetails.name && udetails.email && udetails.password) {
 
         user.findOne({ $or: [{ name: udetails.name }, { email: udetails.email }] })
-            .then(function (existingUser) {
+        .then((existingUser) => {
 
-                if (existingUser) {
-                    res.render("home/register", { message: "Username or email already in use." });
-                } 
-                
-                else {
+            if (existingUser) {
+                res.render("home/register", { message: "Username or email already in use." });
+            } 
+            else {
+                bcrypt.genSalt(10)
+                .then((salt) => {
+                    return bcrypt.hash(udetails.password, salt);
+                })
+                .then((cryptPass) => {
+
                     var newUser = new user({
                         name: udetails.name,
                         email: udetails.email,
-                        password: udetails.password,
+                        password: cryptPass,
                         status: 1,
                         stars: 0,
                         premium: 0,
-                    })
-                    newUser.save()
-                        .then(function () {
-                            user.find({name: newUser.name})
-                            .then(function(){
-                              req.session.user = newUser.name;
-                              req.session.userId = newUser._id;
-                              res.redirect("/dashboard");
-                            })
-                            .catch(function(err){
-                                res.send(err);
-                            });
-                        })
-                        .catch(function (err) {
-                            res.send(err);
-                          });
-                }
-         })
-        .catch(function (err) {
-        res.send(err);
-     });
-  }
+                    });
+
+                    return newUser.save();
+                })
+                .then((newUser) => {
+                    req.session.user = newUser.name;
+                    req.session.userId = newUser._id;
+                    res.redirect("/dashboard");
+                })
+                .catch((err) => {
+                    res.send(err);
+                });
+            }
+        })
+        .catch((err) => {
+            res.send(err);
+        });
+    }
 });
+
  
 
 

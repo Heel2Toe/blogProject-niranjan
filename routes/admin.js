@@ -1,17 +1,25 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
+
 const router = express.Router();
 
 const userdb = require("../modals/userSchema");
 const topicdb = require("../modals/topicSchema");
 const managerdb = require("../modals/managerSchema");
 const admindb = require("../modals/adminSchema");
+const articledb = require("../modals/articleSchema");
+
+
 
 
 const session = require("express-session");
+const { articleSchema } = require('../modals/articleSchema');
 const user = userdb.userModel;
 const topic = topicdb.topicModel;
 const manager = managerdb.managerModel;
 const admin = admindb.adminModel;
+const article = articledb.articleModel;
+
 
 
 router.use(session({secret: "Session Key", resave: true, saveUninitialized: true}));
@@ -98,16 +106,23 @@ function checkSignIn(req,res,next){
     })
  })
 
+
+
  router.post("/ntopic", checkSignIn,  function(req,res){
     var details = req.body;
 
-    var newManager = new manager({
+    bcrypt.genSalt(10)
+    .then((salt)=>{
+        return bcrypt.hash(details.password, salt)
+        .then((cryptPass)=>{
+
+        var newManager = new manager({
         name : details.managername,
         email : details.email,
-        password: details.password,
-    })
+        password: cryptPass,})
 
     newManager.save()
+
     .then((newmanager)=>{
         var newTopic = new topic({
 
@@ -121,6 +136,10 @@ function checkSignIn(req,res,next){
             manager.updateOne({_id : newmanager._id}, {$set: {topic : newtopic._id}})
             .then(()=>{
                 res.redirect("/admin/adashboard");
+
+                  }).catch((err)=>{console.log(err);})
+
+               }).catch((err)=>{console.log(err);})
 
             }).catch((err)=>{console.log(err);})
 
@@ -137,6 +156,62 @@ function checkSignIn(req,res,next){
         res.render("admin/existingM", {managers : data});
 
     }).catch((err)=>{console.log(err);})
+ })
+
+
+ router.get("/managerD/:id", (req,res)=>{
+
+    manager.findOne({_id: req.params.id})
+    .then((mdata)=>{
+        manager.deleteOne({_id : req.params.id})
+        .then(()=>{
+            topic.deleteOne({_id : mdata.topic._id})
+            .then(()=>{
+
+                article.deleteMany({topic : mdata.topic._id})
+                .then(()=>{
+                res.redirect("/admin/existingM");
+                
+                })
+            })
+        })
+    }).catch((err)=>{console.log(err)})
+ })
+
+ router.get("/managerE/:id", checkSignIn, (req,res)=>{
+
+    manager.find({_id : req.params.id})
+    .populate({path: "topic"})
+    .then((mdataejs)=>{
+    res.render("admin/managerE", {managerdata: mdataejs})
+
+    }).catch((err)=>{console.log(err)})
+ })
+
+ router.post("/managerE/:id", (req,res)=>{
+
+    var id = req.params.id;
+    var details = req.body;
+
+    manager.updateMany({_id: id}, {$set: {name: details.managername, 
+                                          email: details.email, 
+                                          password: details.password}})
+   .then(()=>{
+
+    manager.find({_id : id})
+    .populate({path : "topic"})
+    .then((managerdata)=>{
+
+        topic.UpdateOne({_id : managerdata.topic._id }, {$set : {name : details.topicname}})
+        .then(()=>{
+            res.redirect("/admin/adashboard")
+
+        }).catch((err)=>{console.log(err)})
+
+    }).catch((err)=>{console.log(err)})
+
+   }).catch((err)=>{console.log(err)})
+
  })
 
 module.exports = router;
