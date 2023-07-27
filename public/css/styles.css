@@ -110,3 +110,27 @@ body{
   width: 313px;
 }
 
+.stars {
+  display: inline-block;
+}
+
+input.star { 
+  display: none;
+}
+
+
+.star {
+  width: 34px;
+  height: 34px;
+  fill: #ffd900;
+  background: url("../icons/starUnchecked.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  float: right;
+}
+
+.star:checked ~ .star {
+  background: url("../icons/starChecked.svg");
+  
+}
+

@@ -15,8 +15,8 @@
 
  <%} else { for(let i=0; i<topic.articles.length; i++){ %>
     <div class="box glass col-12 leftalign text-light mt-3">
-        <h1><%= topic.articles[i].title %></h1>
-        <h3>Topic: <%= topic.name%></h3>
+        <h3><%= topic.articles[i].title %></h3>
+        <h4>Topic: <%= topic.name%></h4>
         <h5><%= (topic.articles[i].articleDate).toLocaleDateString({year: 'numeric', month: 'long', day: 'numeric'})%></h5>
         <h5><%= topic.articles[i].approved %></h5>
         <p><%= (topic.articles[i].content).slice(0,200) %>...<a class="text-light" href="/posts/<%=topic.articles[i]._id%>">Read more</a></p>

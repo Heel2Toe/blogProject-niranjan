@@ -3,22 +3,27 @@
 <div class="containerc">
 
 <div class="box glass col-12 text-light">    
-<form method="post" class="col-12 text-light">
+<form method="post" id="star-rating" class="col-12 text-light">
 
     <div>
       <h3 style="font-weight: bolder;"><span style="color: #eeddf0;">Comment</span> <span style="color: #858484;">Something</span></h3>
     </div>
 
-      <div class="form-group my-3">
-        <label>Stars</label>
-        <select class="form-control" name="rating">
-          <option value="">rate the article</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option> 
-        </select>
+      <div class="form-group my-3 stars">
+
+      <p>Rate the article<p>
+        
+        <input class="star star-5" id="star-5" type="radio" name="rating" value="5"/>
+        <label class="star star-5" for="star-5"></label>
+        <input class="star star-4" id="star-4" type="radio" name="rating" value="4"/>
+        <label class="star star-4" for="star-4"></label>
+        <input class="star star-3" id="star-3" type="radio" name="rating" value="3"/>
+        <label class="star star-3" for="star-3"></label>
+        <input class="star star-2" id="star-2" type="radio" name="rating" value="2"/>
+        <label class="star star-2" for="star-2"></label>
+        <input class="star star-1" id="star-1" type="radio" name="rating" value="1"/>
+        <label class="star star-1" for="star-1"></label>
+
       </div>
 
     <div class="form-group">
