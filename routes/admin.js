@@ -8,6 +8,8 @@ const topicdb = require("../modals/topicSchema");
 const managerdb = require("../modals/managerSchema");
 const admindb = require("../modals/adminSchema");
 const articledb = require("../modals/articleSchema");
+const reviewdb = require("../modals/reviewSchema");
+
 
 
 
@@ -19,6 +21,7 @@ const topic = topicdb.topicModel;
 const manager = managerdb.managerModel;
 const admin = admindb.adminModel;
 const article = articledb.articleModel;
+const review = reviewdb.reviewModel;
 
 
 
@@ -212,6 +215,32 @@ function checkSignIn(req,res,next){
 
    }).catch((err)=>{console.log(err)})
 
+ })
+
+
+ router.get("/reset", (req,res)=>{
+
+    res.render("admin/reset", {message:""});
+ })
+
+ router.get("/resetaction", checkSignIn, (req,res)=>{
+
+    user.deleteMany({})
+    .then(()=>{
+        manager.deleteMany({})
+        .then(()=>{
+            topic.deleteMany({})
+            .then(()=>{
+                article.deleteMany({})
+                .then(()=>{
+                    review.deleteMany({})
+                    .then(()=>{
+                        res.render("admin/reset", {message: "data cleared"});
+                    })
+                })
+            })
+        })
+    }).catch((err)=>{ console.log(err); })
  })
 
 module.exports = router;

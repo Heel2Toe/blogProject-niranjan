@@ -1,0 +1,20 @@
+<%- include("../partials/header") -%>
+
+
+<div class="containerc">
+  
+    <div class="messagebox glass my-3" id="mbox">
+  <h5 class="text-light" id="message"><%= message %></h5>
+    </div>
+   
+<div class="box glass" style="display: flex; flex-direction: column; align-self:auto;">
+<p class="text-light">warning : this action clears all data from the website</p>
+<button class="btn btn-danger btn-lg col-6" onclick="location.href='/admin/resetaction'">RESET</button>
+</div>    
+
+
+</div>
+
+
+
+<%- include("../partials/footer") -%>
