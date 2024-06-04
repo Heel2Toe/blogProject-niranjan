@@ -78,7 +78,7 @@
           <h3>comments</h3>      
        <% for(let i=0; i<article.reviews.length; i++) {%>
 
-          <div class="my-3 box glass col-12 leftalign">
+          <div class="my-3 box border col-12 leftalign">
           <h5><%= article.reviews[i].user.name %></h5> 
           <h5>@<%= article.reviews[i].user.email %></h5>
           <h6>Rated : <%= article.reviews[i].rating%> <i class="fa-solid fa-star" style="color: #fcba03;"></i></h6>
